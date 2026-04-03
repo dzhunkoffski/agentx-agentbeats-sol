@@ -1,11 +1,45 @@
 {
-  "name": "tau2-purple-agent",
-  "version": "0.1.0",
-  "entrypoint": "src/server.py",
-  "reset": { "method": "restart" },
-  "env": {
-    "OPENAI_API_KEY": "${OPENAI_API_KEY}",
-    "MODEL_NAME": "${MODEL_NAME:-gpt-4o}"
+  manifest_version: "0.1.0",
+
+  // TODO: Declare all config your agent needs from the deployer
+  // Use secret: true for sensitive values like API keys
+  config_schema: {
+    type: "object",
+    properties: {
+      openai_api_key: { type: "string", secret: true },
+    },
+    required: ["openai_api_key"],
+    additionalProperties: false,
   },
-  "image": "ghcr.io/dzhunkoffski/agentx-agentbeats-sol:latest",
+
+  // External services this agent uses
+  slots: {
+    proxy: { kind: "a2a", optional: true },
+  },
+
+  // Runtime configuration
+  program: {
+    // TODO: Replace with your docker image
+    image: "ghcr.io/dzhunkoffski/agentx-agentbeats-sol:latest",
+    entrypoint: "uv run python src/server.py --host 0.0.0.0 --port 9010",
+
+    // TODO: Pass config values as environment variables
+    env: {
+      OPENAI_API_KEY: "${config.my_api_key}",
+    },
+
+    network: {
+      endpoints: [
+        { name: "a2a_endpoint", port: 9010 }, // ensure port matches your entrypoint
+      ],
+    },
+  },
+
+  // Capabilities provided by this agent
+  provides: {
+    a2a: { kind: "a2a", endpoint: "a2a_endpoint" },
+  },
+
+  // Capabilities exposed to the scenario
+  exports: { a2a: "a2a" },
 }
