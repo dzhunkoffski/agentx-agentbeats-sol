@@ -1,0 +1,10 @@
+{
+  "name": "tau2-purple-agent",
+  "version": "0.1.0",
+  "entrypoint": "src/server.py",
+  "reset": { "method": "restart" },
+  "env": {
+    "OPENAI_API_KEY": "${OPENAI_API_KEY}",
+    "MODEL_NAME": "${MODEL_NAME:-gpt-4o}"
+  }
+}
