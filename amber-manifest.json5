@@ -25,7 +25,7 @@
 
     // TODO: Pass config values as environment variables
     env: {
-      OPENAI_API_KEY: "${config.my_api_key}",
+      OPENAI_API_KEY: "${config.openai_api_key}",
     },
 
     network: {
